@@ -38,7 +38,7 @@ namespace KabinKraziness
         {
             base.OnStart(state);
             if (CabinTemp == 0f)
-                CabinTemp = base.part.temperature;
+                CabinTemp = (float)base.part.temperature;
 
             this.Log_Debug("KKCrewPart Onstart " + base.part.name + " " + base.part.flightID + " CabinTemp = " + CabinTemp);
         }
@@ -48,7 +48,9 @@ namespace KabinKraziness
             //Update the Cabin Temperature slowly towards the outside ambient temperature.
             if (timewarpIsValid)
             {
-                ambient = vessel.flightIntegrator.getExternalTemperature();
+                ambient = (float)vessel.externalTemperature;
+                //this.Log_Debug("ambient = " + ambient.ToString("000.00000"));
+                //vessel.flightIntegrator.getExternalTemperature();
                 float CabinTmpRngLow = ambient - 0.5f;
                 float CabinTmpRngHgh = ambient + 0.5f;
                 if (CabinTemp > CabinTmpRngHgh || CabinTemp < CabinTmpRngLow)
