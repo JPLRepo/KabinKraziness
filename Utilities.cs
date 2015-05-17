@@ -47,6 +47,18 @@ namespace KabinKraziness
                 return GameState.EVA;
         }
 
+        //Temperature
+        public static float KelvintoCelsius(float kelvin)
+        {
+            return (kelvin - 273.15f);
+
+        }
+
+        public static float CelsiustoKelvin(float celsius)
+        {
+            return (celsius + 273.15f);
+        }
+
         //Geometry and space
 
         public static double DistanceFromHomeWorld(Vessel vessel)
