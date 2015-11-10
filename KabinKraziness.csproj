@@ -32,7 +32,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\KSP_win 1.0.5\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="AYInterfaces, Version=2.0.5596.17031, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -76,8 +76,8 @@ xcopy "$(TargetPath)" "$(SolutionDir)GameData\REPOSoftTech\$(ProjectName)\Plugin
 where /q "C:\7za\:7za.exe"
 if %25ERRORLEVEL%25 == 1 (  echo Cannot find 7-zip to package build) else (  echo Packaging build  ) 
 
-if exist "$(SolutionDir)..\$(ProjectName).zip" del "$(SolutionDir)..\$(ProjectName).zip"   
-c:\7za\7za a -tzip "$(SolutionDir)..\$(ProjectName).zip" "$(SolutionDir)\GameData" 
+if exist "$(SolutionDir)$(ProjectName).zip" del "$(SolutionDir)..\$(ProjectName).zip"   
+c:\7za\7za a -tzip "$(SolutionDir)$(ProjectName).zip" "$(SolutionDir)\GameData" 
 xcopy /E /Y "$(SolutionDir)GameData" "%25KSP_DIR%25\GameData"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
