@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace KabinKraziness
 {
-    public class KKController : MonoBehaviour, Ikkaddon
+    public class KKController : MonoBehaviour
     {
         public static KKController Instance { get; private set; }
 
@@ -245,13 +245,23 @@ namespace KabinKraziness
         public void Start()
         {
             this.Log("KKController Start");
-            AYPresent = AYClient.AYInstalled;
+            //AYPresent = AYClient.AYInstalled;
+            AYPresent = AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name == "AmpYear");
 
             this.Log("Checked for mods");
             if (AYPresent)
             {
                 this.Log("AmpYear present");
-                KabinKraziness.Instance.debugging = AYClient.GetAY().DeBugging;
+                AYWrapper.InitAYWrapper();
+                if (AYWrapper.APIReady)
+                {
+                    KabinKraziness.Instance.debugging = AYWrapper.AYactualAPI.DeBugging;
+                }
+                else
+                {
+                    this.Log("AmpYear NOT present or Failed to Initialize");
+                    KabinKraziness.Instance.debugging = true;
+                }
             }
             else
             {
@@ -275,18 +285,25 @@ namespace KabinKraziness
             {
                 if ((FlightGlobals.ready && FlightGlobals.ActiveVessel != null))
                 {
-                    this.Log_Debug("KabinKraziness FixedUpdate mode == " + mode);
-                    AY.Iayaddon _AY = AYClient.GetAY();
-                    foreach (Part crewed_part in _AY.CrewablePartList)
+                    //this.Log_Debug("KabinKraziness FixedUpdate mode == " + mode);
+                    if (AYWrapper.APIReady)
                     {
-                        foreach (PartModule module in crewed_part.Modules)
+                        foreach (Part crewed_part in AYWrapper.AYactualAPI.CrewablePartList)
                         {
-                            if (module.moduleName == "KKCrewPart")
+                            foreach (PartModule module in crewed_part.Modules)
                             {
-                                if (mode == GameState.FLIGHT)
-                                    CalcPartCraziness(FlightGlobals.ActiveVessel, crewed_part, module, TimeWarp.fixedDeltaTime);
+                                if (module.moduleName == "KKCrewPart")
+                                {
+                                    if (mode == GameState.FLIGHT)
+                                        CalcPartCraziness(FlightGlobals.ActiveVessel, crewed_part, module,
+                                            TimeWarp.fixedDeltaTime);
+                                }
                             }
                         }
+                    }
+                    else
+                    {
+                        AYWrapper.InitAYWrapper();
                     }
                 }
             }
@@ -305,7 +322,7 @@ namespace KabinKraziness
             this.Log_Debug("CaclPartKRAZY for part = " + current_part.name);
 
             //Change the crewed parts temperature if climate control is active
-            AYPresent = AYClient.AYInstalled;
+            AYPresent = AssemblyLoader.loadedAssemblies.Any(a => a.assembly.GetName().Name == "AmpYear");
             if (!AYPresent)
             {
                 this.Log("KabinKraziness - Dependant on AmpYear MOD being present but it is not.");
@@ -313,12 +330,20 @@ namespace KabinKraziness
                 return;
             }
             else
-                KabinKraziness.Instance.debugging = AYClient.GetAY().DeBugging;
-
-            if (AYPresent)
             {
-                AY.Iayaddon _AY = AYClient.GetAY();
-                if (_AY.ManagerisActive && _AY.SubsystemToggle[3])
+                if (AYWrapper.APIReady)
+                {
+                    KabinKraziness.Instance.debugging = AYWrapper.AYactualAPI.DeBugging;
+                }
+                else
+                {
+                    KabinKraziness.Instance.debugging = true;
+                }
+            }
+
+            if (AYPresent && AYWrapper.APIReady)
+            {
+                if (AYWrapper.AYactualAPI.ManagerisActive && AYWrapper.AYactualAPI.SubsystemToggle[3])
                     changeCrewedPartsTemperature(KKsettings.CLIMATE_TARGET_TEMP, sumDeltaTime);
             }
             // Set the CrewTempConfortable +/- 5 degrees from Cliiate control Cabin Temperature
@@ -360,9 +385,9 @@ namespace KabinKraziness
                 //Craziness added to by how far from Kerbin we are
                 double DstFrmHome = Utilities.DistanceFromHomeWorld(vessel);
                 double DistDiff = DistanceMultiplier(DstFrmHome);
-                this.Log_Debug("BaseCrazy = " + basecrazy.ToString("0.0000000") + " DistDiff = " + DistDiff.ToString("0.000000000000"));
+                //this.Log_Debug("BaseCrazy = " + basecrazy.ToString("0.0000000") + " DistDiff = " + DistDiff.ToString("0.000000000000"));
                 basecrazy += DistDiff; // Add the distance factor
-                this.Log_Debug("DistMultApplied = " + basecrazy.ToString("0.0000000000"));
+                //this.Log_Debug("DistMultApplied = " + basecrazy.ToString("0.0000000000"));
                 if (!crewTempComfortable) //Cabin Temperature is not comfortable so add the uncomfortable factor
                 {
                     basecrazy += KKsettings.CRAZY_CLIMATE_UNCOMF_FACTOR;
@@ -372,27 +397,26 @@ namespace KabinKraziness
                 if ((DstFrmHome < 800000) && (FlightGlobals.ActiveVessel.situation != Vessel.Situations.ORBITING &&
                     FlightGlobals.ActiveVessel.situation != Vessel.Situations.ESCAPING && FlightGlobals.ActiveVessel.situation != Vessel.Situations.DOCKED))
                 {
-                    this.Log_Debug("We are within Kerbin atmosphere and not escaping or orbiting so basecrazy set to zero");
-                    this.Log_Debug("dstfrmhome = " + DstFrmHome + " situation = " + FlightGlobals.ActiveVessel.situation);
+                    //this.Log_Debug("We are within Kerbin atmosphere and not escaping or orbiting so basecrazy set to zero");
+                    //this.Log_Debug("dstfrmhome = " + DstFrmHome + " situation = " + FlightGlobals.ActiveVessel.situation);
                     basecrazy = 0f;
                 }
                 // If Luxury items are on, craziness is reduced
-                if (AYPresent)
+                if (AYPresent && AYWrapper.APIReady)
                 {
-                    AY.Iayaddon _AY = AYClient.GetAY();
-                    bool _AYMAct = _AY.ManagerisActive;
+                    bool _AYMAct =  AYWrapper.AYactualAPI.ManagerisActive;
                     this.Log_Debug("ManagerisActive = " + _AYMAct);
-                    if (_AYMAct && _AY.SubsystemToggle[3])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[3])
                         reducecrazy += KKsettings.CRAZY_CLIMATE_REDUCE_FACTOR;
-                    if (_AYMAct && _AY.SubsystemToggle[4])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[4])
                         reducecrazy += KKsettings.CRAZY_RADIO_REDUCE_FACTOR;
-                    if (_AYMAct && _AY.SubsystemToggle[5])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[5])
                         reducecrazy += KKsettings.CRAZY_MASSAGE_REDUCE_FACTOR;
                 }
 
                 //Calculate the final craziness amount
                 double timestep_drain = basecrazy - reducecrazy;
-                this.Log_Debug("CALCCRAZY craziness before sumdelta calc = " + timestep_drain);
+                //this.Log_Debug("CALCCRAZY craziness before sumdelta calc = " + timestep_drain);
                 timestep_drain = timestep_drain * sumDeltaTime;
                 float CabinCraziness = 0f;
                 //Set the parts craziness
@@ -410,11 +434,10 @@ namespace KabinKraziness
 
         private void changeCrewedPartsTemperature(double target_temp, float sumDeltaTime)
         {
-            this.Log_Debug("changeCrewedPartsTemp");
-            if (AYClient.AYInstalled)
+            //this.Log_Debug("changeCrewedPartsTemp");
+            if (AYPresent && AYWrapper.APIReady)
             {
-                AY.Iayaddon _AY = AYClient.GetAY();
-                foreach (Part crewed_part in _AY.CrewablePartList)
+                foreach (Part crewed_part in AYWrapper.AYactualAPI.CrewablePartList)
                 {
                     foreach (PartModule module in crewed_part.Modules)
                     {
@@ -462,7 +485,7 @@ namespace KabinKraziness
                     timeSinceLastCrazyCheck = currentTime;
                 }
                 // Something Major might happen code to be put here
-                this.Log_Debug("major Warning TimeSinceCrazyCheck = " + timeSinceLastCrazyCheck + " currentTime = " + currentTime);                
+                //this.Log_Debug("major Warning TimeSinceCrazyCheck = " + timeSinceLastCrazyCheck + " currentTime = " + currentTime);                
                 if (currentTime - timeSinceLastCrazyCheck > 60f)
                 {
                     timeSinceLastCrazyCheck = currentTime;
@@ -488,7 +511,7 @@ namespace KabinKraziness
                         timeSinceLastCrazyCheck = currentTime;
                     }
                     // Something Minor might happen code to be put here
-                    this.Log_Debug("Minor Warning TimeSinceCrazyCheck = " + timeSinceLastCrazyCheck + " currentTime = " + currentTime);
+                    //this.Log_Debug("Minor Warning TimeSinceCrazyCheck = " + timeSinceLastCrazyCheck + " currentTime = " + currentTime);
                     if (currentTime - timeSinceLastCrazyCheck > 90f)
                     {
                         timeSinceLastCrazyCheck = currentTime;
@@ -747,7 +770,7 @@ namespace KabinKraziness
                                                         else
                                                             Multiplier = ((double)20 / (double)24 / (double)60);
 
-            this.Log_Debug("distance Multiplier = " + Multiplier.ToString("00.000000000000000"));
+            //this.Log_Debug("distance Multiplier = " + Multiplier.ToString("00.000000000000000"));
             return Multiplier;
         }
     }

@@ -1,0 +1,8 @@
+﻿V0.4.0 Support for KSP 1.1.
+RE-factored code to remove need for KKInterfaces.dll and AYInterfaces.dll. Now uses Reflection to communicate between KabinKraziness and AmpYear.
+V0.3.2 Support for KSP 1.0.5
+V0.3.1 Support for KSP 1.0.3
+V0.3 Converted Kevin to Celsius in the temperature displays for command pods. Added KSP-AVC support.
+V0.2 Recompile for KSP V1.0.0
+V0.1a Fixed dependency with AmpYear. Moved AmpYear and KabinKraziness to shared folder in /gamedata/REPOSoftTech.
+V0.1 Removed KabinKraziness from AmpYear and made it separate option implementation (hence this OP). 

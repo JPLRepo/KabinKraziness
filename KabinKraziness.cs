@@ -76,7 +76,7 @@ namespace KabinKraziness
     {
         public static KabinKraziness Instance { get; private set; }
 
-        public KKSettings KKsettings { get; private set; }
+        public KKSettings KKsettings;
 
         private readonly string globalConfigFilename;
         private ConfigNode globalNode = new ConfigNode();
