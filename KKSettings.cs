@@ -26,25 +26,25 @@ namespace KabinKraziness
     {
         private const string configNodeName = "KKSettings";
 
-        public double CLIMATE_BASE_DRAIN_FACTOR { get; set; }
+        public double CLIMATE_BASE_DRAIN_FACTOR;
 
-        public float CLIMATE_TARGET_TEMP { get; set; }
+        public float CLIMATE_TARGET_TEMP;
 
-        public double MASSAGE_BASE_DRAIN_FACTOR { get; set; }
+        public double MASSAGE_BASE_DRAIN_FACTOR;
 
-        public double CRAZY_BASE_DRAIN_FACTOR { get; set; }
+        public double CRAZY_BASE_DRAIN_FACTOR;
 
-        public double CRAZY_CLIMATE_UNCOMF_FACTOR { get; set; }
+        public double CRAZY_CLIMATE_UNCOMF_FACTOR;
 
-        public double CRAZY_CLIMATE_REDUCE_FACTOR { get; set; }
+        public double CRAZY_CLIMATE_REDUCE_FACTOR;
 
-        public double CRAZY_RADIO_REDUCE_FACTOR { get; set; }
+        public double CRAZY_RADIO_REDUCE_FACTOR;
 
-        public double CRAZY_MASSAGE_REDUCE_FACTOR { get; set; }
+        public double CRAZY_MASSAGE_REDUCE_FACTOR;
 
-        public double CRAZY_MINOR_LIMIT { get; set; }
+        public double CRAZY_MINOR_LIMIT;
 
-        public double CRAZY_MAJOR_LIMIT { get; set; }
+        public double CRAZY_MAJOR_LIMIT;
 
         public KKSettings()
         {
@@ -68,17 +68,19 @@ namespace KabinKraziness
             if (node.HasNode(configNodeName))
             {
                 this.Log_Debug("KKSettings KKSettings has node " + configNodeName);
-                ConfigNode KKsettingsNode = node.GetNode(configNodeName);
-                CLIMATE_BASE_DRAIN_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CLIMATE_BASE_DRAIN_FACTOR", CLIMATE_BASE_DRAIN_FACTOR);
-                CLIMATE_TARGET_TEMP = Utilities.GetNodeValue(KKsettingsNode, "CLIMATE_TARGET_TEMP", CLIMATE_TARGET_TEMP);
-                MASSAGE_BASE_DRAIN_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "MASSAGE_BASE_DRAIN_FACTOR", MASSAGE_BASE_DRAIN_FACTOR);
-                CRAZY_BASE_DRAIN_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_BASE_DRAIN_FACTOR", CRAZY_BASE_DRAIN_FACTOR);
-                CRAZY_CLIMATE_UNCOMF_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_CLIMATE_UNCOMF_FACTOR", CRAZY_CLIMATE_UNCOMF_FACTOR);
-                CRAZY_CLIMATE_REDUCE_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_CLIMATE_REDUCE_FACTOR", CRAZY_CLIMATE_REDUCE_FACTOR);
-                CRAZY_RADIO_REDUCE_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_RADIO_REDUCE_FACTOR", CRAZY_RADIO_REDUCE_FACTOR);
-                CRAZY_MASSAGE_REDUCE_FACTOR = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_MASSAGE_REDUCE_FACTOR", CRAZY_MASSAGE_REDUCE_FACTOR);
-                CRAZY_MINOR_LIMIT = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_MINOR_LIMIT", CRAZY_MINOR_LIMIT);
-                CRAZY_MAJOR_LIMIT = Utilities.GetNodeValue(KKsettingsNode, "CRAZY_MAJOR_LIMIT", CRAZY_MAJOR_LIMIT);
+                ConfigNode KKsettingsNode = new ConfigNode();
+                if (!node.TryGetNode(configNodeName, ref KKsettingsNode))
+                    return;
+                KKsettingsNode.TryGetValue("CLIMATE_BASE_DRAIN_FACTOR", ref CLIMATE_BASE_DRAIN_FACTOR);
+                KKsettingsNode.TryGetValue("CLIMATE_TARGET_TEMP", ref CLIMATE_TARGET_TEMP);
+                KKsettingsNode.TryGetValue("MASSAGE_BASE_DRAIN_FACTOR", ref MASSAGE_BASE_DRAIN_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_BASE_DRAIN_FACTOR", ref CRAZY_BASE_DRAIN_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_CLIMATE_UNCOMF_FACTOR", ref CRAZY_CLIMATE_UNCOMF_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_CLIMATE_REDUCE_FACTOR", ref CRAZY_CLIMATE_REDUCE_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_RADIO_REDUCE_FACTOR", ref CRAZY_RADIO_REDUCE_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_MASSAGE_REDUCE_FACTOR", ref CRAZY_MASSAGE_REDUCE_FACTOR);
+                KKsettingsNode.TryGetValue("CRAZY_MINOR_LIMIT", ref CRAZY_MINOR_LIMIT);
+                KKsettingsNode.TryGetValue("CRAZY_MAJOR_LIMIT", ref CRAZY_MAJOR_LIMIT);
                 this.Log_Debug("KKSettings load complete");
             }
         }

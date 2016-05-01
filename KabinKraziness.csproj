@@ -32,15 +32,10 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\KSP_win 1.0.5\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\KSPDLLs\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="AYInterfaces, Version=2.0.5596.17031, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\AmpYear\AYInterfaces\bin\Debug\AYInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="KKInterfaces, Version=2.0.5596.17006, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>KKInterfaces\bin\Debug\KKInterfaces.dll</HintPath>
+    <Reference Include="KSPUtil">
+      <HintPath>..\KSPDLLs\KSPUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,35 +45,78 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\UnityEngine.dll</HintPath>
+      <HintPath>..\KSPDLLs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\KSPDLLs\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AYClient.cs" />
+    <Compile Include="AYWrapper.cs" />
     <Compile Include="KabinKraziness.cs" />
     <Compile Include="KKCraziness.cs" />
     <Compile Include="KKCrewPart.cs" />
     <Compile Include="KKEnums.cs" />
+    <None Include="Distribution\GameData\REPOSoftTech\KabinKraziness\KabinKraziness.version" />
+    <None Include="Distribution\GameData\REPOSoftTech\KabinKraziness\LICENSE" />
+    <None Include="Distribution\GameData\REPOSoftTech\KabinKraziness\MMConfigKabinKraziness.cfg" />
+    <None Include="Distribution\GameData\REPOSoftTech\KabinKraziness\Plugins\Config.cfg" />
     <None Include="KKSController.cs" />
     <Compile Include="KKSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ksp_dir.txt" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\ChangeLog.txt" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\MiniAVC Licence.txt" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\MiniAVC.dll" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\MiniAVC.xml" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\Plugins\KabinKraziness.dll" />
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\Plugins\KabinKraziness.dll.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Distribution\GameData\REPOSoftTech\KabinKraziness\Plugins\KabinKraziness.pdb" />
+    <Content Include="LocalDev\7za_dir.txt" />
+    <Content Include="LocalDev\ksp_dir.txt" />
+    <Content Include="LocalDev\mono_exe.txt" />
+    <Content Include="LocalDev\pdb2mdb_exe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
   <PropertyGroup>
-    <PostBuildEvent>set /p KSP_DIR=&lt;"$(ProjectDir)ksp_dir.txt"
+    <PostBuildEventDependsOn>
+    $(PostBuildEventDependsOn);
+    PostBuildMacros;
+  </PostBuildEventDependsOn>
+    <PostBuildEvent>set /p KSP_DIR=&lt;"$(ProjectDir)LocalDev\ksp_dir.txt"
 
-xcopy "$(TargetPath)" "$(SolutionDir)GameData\REPOSoftTech\$(ProjectName)\Plugins\" /Y
+set /p MONO_EXE_DIR=&lt;"$(ProjectDir)LocalDev\mono_exe.txt"
 
-where /q "C:\7za\:7za.exe"
+set /p PDB2MDB_EXE_DIR=&lt;"$(ProjectDir)LocalDev\pdb2mdb_exe.txt"
+
+set /p ZA_DIR=&lt;"$(ProjectDir)LocalDev\7za_dir.txt"
+
+xcopy "$(TargetPath)" "$(SolutionDir)Distribution\GameData\REPOSoftTech\$(ProjectName)\Plugins\" /Y
+xcopy "$(TargetDir)$(ProjectName).pdb" "$(SolutionDir)Distribution\GameData\REPOSoftTech\$(ProjectName)\Plugins\" /Y
+
+cd "$(TargetDir)"
+"%25MONO_EXE_DIR%25" "%25PDB2MDB_EXE_DIR%25" "$(TargetFileName)"
+xcopy "$(TargetDir)$(ProjectName).dll.mdb" "$(SolutionDir)Distribution\GameData\REPOSoftTech\$(ProjectName)\Plugins\" /Y
+
+where /q %25ZA_DIR%25:7za.exe
 if %25ERRORLEVEL%25 == 1 (  echo Cannot find 7-zip to package build) else (  echo Packaging build  ) 
 
-if exist "$(SolutionDir)$(ProjectName).zip" del "$(SolutionDir)..\$(ProjectName).zip"   
-c:\7za\7za a -tzip "$(SolutionDir)$(ProjectName).zip" "$(SolutionDir)\GameData" 
-xcopy /E /Y "$(SolutionDir)GameData" "%25KSP_DIR%25\GameData"</PostBuildEvent>
+if exist "$(SolutionDir)Distribution\$(ProjectName)_V@(VersionNumber).zip" del "$(SolutionDir)Distribution\$(ProjectName)_V@(VersionNumber).zip"   
+%25ZA_DIR%257za.exe a -tzip "$(SolutionDir)Distribution\$(ProjectName)_V@(VersionNumber).zip" "$(SolutionDir)Distribution\GameData" 
+%25ZA_DIR%257za.exe d -r "$(SolutionDir)Distribution\$(ProjectName)_V@(VersionNumber).zip" "*.ddsified" "*.xcf" "*.blend" "thumbs.db" "*.pdb" "*.dll.mdb"
+xcopy /E /Y "$(SolutionDir)Distribution\GameData" "%25KSP_DIR%25\GameData"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
