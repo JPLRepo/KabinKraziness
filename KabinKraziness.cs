@@ -39,7 +39,7 @@ namespace KabinKraziness
             var Currentgame = HighLogic.CurrentGame;
             Utilities.Log("KabinKraziness  AddScenarioModules", " ScenarioModules Start");
             ProtoScenarioModule protoscenmod = Currentgame.scenarios.Find(s => s.moduleName == typeof(KabinKraziness).Name);
-
+            
             if (protoscenmod == null)
             {
                 Utilities.Log("KabinKraziness AddScenarioModules", " Adding the scenario module.");
@@ -88,7 +88,7 @@ namespace KabinKraziness
             Utilities.Log("KabinKraziness", "Constructor");
             Instance = this;
             KKsettings = new KKSettings();
-            globalConfigFilename = System.IO.Path.Combine(_AssemblyFolder, "Config.cfg").Replace("\\", "/");
+            globalConfigFilename = System.IO.Path.Combine(_AssemblyFolder, "PluginData/Config.cfg").Replace("\\", "/");
             this.Log("globalConfigFilename = " + globalConfigFilename);
         }
 

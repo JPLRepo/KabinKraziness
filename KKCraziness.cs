@@ -288,14 +288,15 @@ namespace KabinKraziness
                     //this.Log_Debug("KabinKraziness FixedUpdate mode == " + mode);
                     if (AYWrapper.APIReady)
                     {
-                        foreach (Part crewed_part in AYWrapper.AYactualAPI.CrewablePartList)
-                        {
-                            foreach (PartModule module in crewed_part.Modules)
-                            {
-                                if (module.moduleName == "KKCrewPart")
+                        for (int i = 0; i < AYWrapper.AYactualAPI.CrewablePartList.Count; i++)
+                        { 
+                            var crewed_part = AYWrapper.AYactualAPI.CrewablePartList[i];
+                            for (int j = 0; j < crewed_part.Modules.Count; j ++)
+                            { 
+                                if (crewed_part.Modules[j].moduleName == "KKCrewPart")
                                 {
                                     if (mode == GameState.FLIGHT)
-                                        CalcPartCraziness(FlightGlobals.ActiveVessel, crewed_part, module,
+                                        CalcPartCraziness(FlightGlobals.ActiveVessel, crewed_part, crewed_part.Modules[j],
                                             TimeWarp.fixedDeltaTime);
                                 }
                             }
@@ -437,10 +438,12 @@ namespace KabinKraziness
             //this.Log_Debug("changeCrewedPartsTemp");
             if (AYPresent && AYWrapper.APIReady)
             {
-                foreach (Part crewed_part in AYWrapper.AYactualAPI.CrewablePartList)
+                for (int i = 0; i < AYWrapper.AYactualAPI.CrewablePartList.Count; i++)
                 {
-                    foreach (PartModule module in crewed_part.Modules)
+                    var crewed_part = AYWrapper.AYactualAPI.CrewablePartList[i];
+                    for (int j = 0; j < crewed_part.Modules.Count; j++)
                     {
+                        var module = crewed_part.Modules[j];
                         if (module.moduleName == "KKCrewPart")
                         {
                             float temp_chg = CLIMATE_HEAT_RATE * sumDeltaTime;
@@ -637,9 +640,9 @@ namespace KabinKraziness
         {
             //Construct candidate resource parts list
             List<PartResource> candidates = new List<PartResource>();
-            foreach (Part part in vessel.parts)
+            for (int i = 0; i < vessel.parts.Count; i++)
             {
-                foreach (PartResource resource in part.Resources)
+                foreach (PartResource resource in vessel.parts[i].Resources)
                 {
                     if (resource.amount > 0)
                     {
