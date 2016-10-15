@@ -344,7 +344,7 @@ namespace KabinKraziness
 
             if (AYPresent && AYWrapper.APIReady)
             {
-                if (AYWrapper.AYactualAPI.ManagerisActive && AYWrapper.AYactualAPI.SubsystemToggle[3])
+                if (AYWrapper.AYactualAPI.ManagerisActive && AYWrapper.AYactualAPI.SubsystemToggle[2])
                     changeCrewedPartsTemperature(KKsettings.CLIMATE_TARGET_TEMP, sumDeltaTime);
             }
             // Set the CrewTempConfortable +/- 5 degrees from Cliiate control Cabin Temperature
@@ -407,11 +407,11 @@ namespace KabinKraziness
                 {
                     bool _AYMAct =  AYWrapper.AYactualAPI.ManagerisActive;
                     this.Log_Debug("ManagerisActive = " + _AYMAct);
-                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[3])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[2])
                         reducecrazy += KKsettings.CRAZY_CLIMATE_REDUCE_FACTOR;
-                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[4])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[3])
                         reducecrazy += KKsettings.CRAZY_RADIO_REDUCE_FACTOR;
-                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[5])
+                    if (_AYMAct && AYWrapper.AYactualAPI.SubsystemToggle[4])
                         reducecrazy += KKsettings.CRAZY_MASSAGE_REDUCE_FACTOR;
                 }
 
