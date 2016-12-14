@@ -1,4 +1,6 @@
-﻿V0.4.3
+﻿V0.4.4
+    Re-Compile for KSP 1.2.2
+V0.4.3
     Re-Compile for KSP 1.2.1
 V0.4.2
 	Re-Compile for KSP 1.2
