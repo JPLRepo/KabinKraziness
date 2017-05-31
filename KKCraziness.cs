@@ -20,8 +20,9 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
+using UniLinq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace KabinKraziness
 {
@@ -375,7 +376,7 @@ namespace KabinKraziness
                     else
                     {
                         ScreenMessages.RemoveMessage(autoTimer);
-                        autoTimer = ScreenMessages.PostScreenMessage(" Autopilot disabled for " + Utilities.formatTime(autoPilotDisTime - autoPilotDisCounter));
+                        autoTimer = ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00001", Utilities.formatTime(autoPilotDisTime - autoPilotDisCounter))); //#autoLOC_KKRAZY_00001 = Autopilot disabled for <<1>>
                     }
                 }
                 double basecrazy = KKsettings.CRAZY_BASE_DRAIN_FACTOR;
@@ -480,10 +481,10 @@ namespace KabinKraziness
             if (Craziness > KKsettings.CRAZY_MAJOR_LIMIT)
             {
                 ScreenMessages.RemoveMessage(crazyAlert);
-                crazyAlert = ScreenMessages.PostScreenMessage("Craziness " + Craziness.ToString("00.00") + "% - Major Alert");
+                crazyAlert = ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00002", Craziness.ToString("00.00"))); //#autoLOC_KKRAZY_00002 = Craziness <<1>>% - Major Alert
                 if (!firstMajCrazyWarning)
                 {
-                    ScreenMessages.PostScreenMessage(current_part.name + " - Things are about to get Crazy in here!", 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                    ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00003", current_part.name), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00003 = <<1>> - Things are about to get Crazy in here!
                     firstMajCrazyWarning = true;
                     timeSinceLastCrazyCheck = currentTime;
                 }
@@ -506,10 +507,10 @@ namespace KabinKraziness
                 if (Craziness > KKsettings.CRAZY_MINOR_LIMIT)
                 {
                     ScreenMessages.RemoveMessage(crazyAlert);
-                    crazyAlert = ScreenMessages.PostScreenMessage("Craziness " + Craziness.ToString("00.00") + "% - Minor Alert");
+                    crazyAlert = ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00004", Craziness.ToString("00.00"))); //#autoLOC_KKRAZY_00004 = Craziness <<1>>% - Minor Alert
                     if (!firstMinCrazyWarning)
                     {
-                        ScreenMessages.PostScreenMessage(current_part.name + " - It's Getting Crazy in here!", 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                        ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00005", current_part.name), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00005 = <<1>> - It's Getting Crazy in here!
                         firstMinCrazyWarning = true;
                         timeSinceLastCrazyCheck = currentTime;
                     }
@@ -587,7 +588,7 @@ namespace KabinKraziness
                 //AutoPilotDisCounter = 0f;
                 ExtDisTime = ExtDisTime * 60;
                 autoPilotDisTime += ExtDisTime;
-                ScreenMessages.PostScreenMessage(" The Krazy crew have disabled the Autopilot for another " + Utilities.formatTime(ExtDisTime), 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00006", Utilities.formatTime(ExtDisTime)), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00006 = The Krazy crew have disabled the Autopilot for another <<1>>
             }
             else // not already disabled
             {
@@ -597,7 +598,7 @@ namespace KabinKraziness
                 else
                     autoPilotDisTime = RandomDice(2);
                 autoPilotDisTime = autoPilotDisTime * 60;
-                ScreenMessages.PostScreenMessage(" The Krazy crew have disabled the Autopilot for " + Utilities.formatTime(autoPilotDisTime), 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00007", Utilities.formatTime(autoPilotDisTime)), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00007 = The Krazy crew have disabled the Autopilot for <<1>>
                 autoPilotDisCounter = 0f;
             }
             this.Log_Debug("Autopilot disabled for autopilotdistime = " + autoPilotDisTime);
@@ -611,7 +612,7 @@ namespace KabinKraziness
             autoPilotDisCounter = 0f;
             autoPilotDisTime = 0f;
             ScreenMessages.RemoveMessage(autoTimer);
-            ScreenMessages.PostScreenMessage(" The crew have re-enabled the Autopilot", 5.0f, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00008"), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00008 = The crew have re-enabled the Autopilot  
         }
 
         private void DumpResource(List<PartResource> candidates, bool Major)
@@ -622,7 +623,7 @@ namespace KabinKraziness
                 int selectcandidate = RandomDice(candidates.Count);
                 double dumpamt = candidates[selectcandidate].amount / 4;
                 candidates[selectcandidate].amount -= dumpamt;
-                ScreenMessages.PostScreenMessage("The Krazy crew just threw out " + dumpamt.ToString("0.00") + " of " + candidates[selectcandidate].resourceName, 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00009", dumpamt.ToString("0.00"), candidates[selectcandidate].resourceName), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00009 = The Krazy crew just threw out <<1>> of <<2>>
                 return;
             }
 
@@ -631,7 +632,7 @@ namespace KabinKraziness
                 int selectcandidate = RandomDice(candidates.Count);
                 double dumpamt = candidates[selectcandidate].amount / 2;
                 candidates[selectcandidate].amount -= dumpamt;
-                ScreenMessages.PostScreenMessage("The Krazy crew just threw out " + dumpamt.ToString("0.00") + " of " + candidates[selectcandidate].resourceName, 5.0f, ScreenMessageStyle.UPPER_CENTER);
+                ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00009", dumpamt.ToString("0.00"), candidates[selectcandidate].resourceName), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00009 = The Krazy crew just threw out <<1>> of <<2>>
                 return;
             }
         }
@@ -698,7 +699,7 @@ namespace KabinKraziness
             ScienceData[] selectdata = candidates[selectcandidate].GetData();
             this.Log_Debug("selectdata = " + selectdata.ToString());
             candidates[selectcandidate].DumpData(selectdata[0]);
-            ScreenMessages.PostScreenMessage("The Krazy crew just threw out the collected science: " + selectdata[0].title, 5.0f, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00010", selectdata[0].title), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00010 = The Krazy crew just threw out the collected science: <<1>>
         }
 
         private void DumpAllScience(List<IScienceDataContainer> candidates)
@@ -715,7 +716,7 @@ namespace KabinKraziness
                     }
                 }
             }
-            ScreenMessages.PostScreenMessage("The Krazy crew just threw out all collected science", 5.0f, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00011"), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00011 = The Krazy crew just threw out all collected science
         }
 
         private void GoOverboard(Vessel vessel, Part current_part, bool Major)
@@ -728,7 +729,7 @@ namespace KabinKraziness
             int selcrew = RandomDice(crewcnt);
             selcrew = selcrew - 1;
             this.Log_Debug("Crew member going for a walk :" + vslcrew[selcrew].name);
-            ScreenMessages.PostScreenMessage(vslcrew[selcrew].name + " decided to go outside for some fresh ai.. err..", 5.0f, ScreenMessageStyle.UPPER_CENTER);
+            ScreenMessages.PostScreenMessage(Localizer.Format("#autoLOC_KKRAZY_00012", vslcrew[selcrew].name), 5.0f, ScreenMessageStyle.UPPER_CENTER); //#autoLOC_KKRAZY_00012 = <<1>> decided to go outside for some fresh ai.. err..
             FlightEVA.fetch.spawnEVA(vslcrew[selcrew], current_part, current_part.airlock);
         }
 

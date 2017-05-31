@@ -25,13 +25,13 @@ namespace KabinKraziness
     internal class KKCrewPart : PartModule
     {
         // New context menu info
-        [KSPField(isPersistant = true, guiName = "Cabin Temperature", guiUnits = "C", guiFormat = "F1", guiActive = true)]
+        [KSPField(isPersistant = true, guiName = "#autoLOC_KKRAZY_00014", guiUnits = "C", guiFormat = "F1", guiActive = true)] //#autoLOC_KKRAZY_00014 = Cabin Temperature
         public float CabinTemp = 0f;
 
-        [KSPField(isPersistant = true, guiName = "Outside Temperature", guiUnits = "C", guiFormat = "F1", guiActive = true)]
+        [KSPField(isPersistant = true, guiName = "#autoLOC_KKRAZY_00015", guiUnits = "C", guiFormat = "F1", guiActive = true)] //#autoLOC_KKRAZY_00015 = Outside Temperature
         public float ambient = 0f;
 
-        [KSPField(isPersistant = true, guiName = "KabinKraziness", guiUnits = "%", guiFormat = "N", guiActive = true)]
+        [KSPField(isPersistant = true, guiName = "#autoLOC_KKRAZY_00016", guiUnits = "%", guiFormat = "N", guiActive = true)] //#autoLOC_KKRAZY_00016 = KabinKraziness		
         public float CabinCraziness = 0f;
 
         public override void OnStart(PartModule.StartState state)

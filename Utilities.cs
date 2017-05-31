@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using KSP.Localization;
 
 namespace KabinKraziness
 {
@@ -90,27 +91,27 @@ namespace KabinKraziness
 
             if (y > 0)
             {
-                parts.Add(String.Format("{0}:year ", y));
+                parts.Add(String.Format("{0}:{1} ", y, Localizer.Format("#autoLOC_6002334"))); //#autoLOC_6002334 = year
             }
 
             if (d > 0)
             {
-                parts.Add(String.Format("{0}:days ", d));
+                parts.Add(String.Format("{0}:{1} ", d, Localizer.Format("#autoLOC_6002336"))); //#autoLOC_6002336 = days
             }
 
             if (h > 0)
             {
-                parts.Add(String.Format("{0}:hours ", h));
+                parts.Add(String.Format("{0}:{1} ", h, Localizer.Format("#autoLOC_6002339"))); //#autoLOC_6002339 = hours
             }
 
             if (m > 0)
             {
-                parts.Add(String.Format("{0}:mins ", m));
+                parts.Add(String.Format("{0}:{1} ", m, Localizer.Format("#autoLOC_6002329"))); //#autoLOC_6002329 = Mins
             }
 
             if (seconds > 0)
             {
-                parts.Add(String.Format("{0:00}:secs ", seconds));
+                parts.Add(String.Format("{0:00}:{1} ", seconds, Localizer.Format("#autoLOC_6002331"))); //#autoLOC_6002331 = Secs
             }
 
             if (parts.Count > 0)
@@ -119,7 +120,7 @@ namespace KabinKraziness
             }
             else
             {
-                return "0s";
+                return "0" + Localizer.Format("#autoLOC_6002317"); //#autoLOC_6002317 = s
             }
         }
 
