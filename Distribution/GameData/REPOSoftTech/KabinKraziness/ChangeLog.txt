@@ -1,4 +1,6 @@
-﻿V0.4.5
+﻿V0.4.6
+	Re-Compile for KSP 1.5.x
+V0.4.5
 	Re-Compile for KSP 1.3.0
 	Localization ready.
 V0.4.4
