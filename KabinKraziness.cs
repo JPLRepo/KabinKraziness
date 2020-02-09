@@ -31,47 +31,8 @@ namespace KabinKraziness
     {
     }
 
-    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-    public class AddScenarioModules : MonoBehaviour
-    {
-        private void Start()
-        {
-            var Currentgame = HighLogic.CurrentGame;
-            Utilities.Log("KabinKraziness  AddScenarioModules", " ScenarioModules Start");
-            ProtoScenarioModule protoscenmod = Currentgame.scenarios.Find(s => s.moduleName == typeof(KabinKraziness).Name);
-            
-            if (protoscenmod == null)
-            {
-                Utilities.Log("KabinKraziness AddScenarioModules", " Adding the scenario module.");
-                protoscenmod = Currentgame.AddProtoScenarioModule(typeof(KabinKraziness), GameScenes.SPACECENTER, GameScenes.FLIGHT);
-            }
-            else
-            {
-                if (!protoscenmod.targetScenes.Any(s => s == GameScenes.SPACECENTER))
-                {
-                    Utilities.Log("KabinKraziness AddScenarioModules", " Adding the SpaceCenter scenario module.");
-                    protoscenmod.targetScenes.Add(GameScenes.SPACECENTER);
-                }
-                if (!protoscenmod.targetScenes.Any(s => s == GameScenes.FLIGHT))
-                {
-                    Utilities.Log("KabinKraziness AddScenarioModules", " Adding the flight scenario module.");
-                    protoscenmod.targetScenes.Add(GameScenes.FLIGHT);
-                }
-            }
-            ProtoScenarioModule protoscenmod2 = Currentgame.scenarios.Find(s => s.moduleName == typeof(KabinKraziness).Name);
-            if (protoscenmod2 == null)
-                Utilities.Log("KabinKraziness", "Why scenario module still null?? BAD");
-            else
-            {
-                Utilities.Log("KabinKraziness", "ScenModule Name = " + protoscenmod2.moduleName);
-                foreach (GameScenes x in protoscenmod2.targetScenes)
-                {
-                    Utilities.Log("KabinKraziness", "gamescene = " + x);
-                }
-            }
-        }
-    }
-
+    
+    [KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.EDITOR, GameScenes.FLIGHT)]
     public class KabinKraziness : ScenarioModule
     {
         public static KabinKraziness Instance { get; private set; }
@@ -85,11 +46,11 @@ namespace KabinKraziness
 
         public KabinKraziness()
         {
-            Utilities.Log("KabinKraziness", "Constructor");
+            //this.Log("KabinKraziness Constructor");
             Instance = this;
             KKsettings = new KKSettings();
             globalConfigFilename = System.IO.Path.Combine(_AssemblyFolder, "PluginData/Config.cfg").Replace("\\", "/");
-            this.Log("globalConfigFilename = " + globalConfigFilename);
+            //this.Log("globalConfigFilename = " + globalConfigFilename);
         }
 
         public override void OnAwake()

@@ -32,7 +32,7 @@ namespace KabinKraziness
 
         public KKController()
         {
-            Utilities.Log("KKController", "Constructor");
+            //Utilities.Log("KKController", "Constructor");
             Instance = this;
         }
 
